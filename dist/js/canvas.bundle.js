@@ -128,13 +128,19 @@ addEventListener('resize', function () {
     init();
 });
 
+addEventListener("click", function () {
+    init();
+});
+
 var gravity = 1;
-var friction = 0.99;
+var friction = 0.59;
+var radius = 30;
 
 // Objects
-function Ball(x, y, dy, radius, color) {
+function Ball(x, y, dx, dy, radius, color) {
     this.x = x;
     this.y = y;
+    this.dx = dx;
     this.dy = dy;
     this.radius = radius;
     this.color = color;
@@ -145,29 +151,37 @@ Ball.prototype.draw = function () {
     c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
     c.fillStyle = this.color;
     c.fill();
+    c.stroke();
     c.closePath();
 };
 
 Ball.prototype.update = function () {
-    if (this.y + this.radius > canvas.height) {
+    if (this.y + this.radius + this.dy > canvas.height) {
         this.dy = -this.dy * friction;
     } else {
         this.dy += gravity;
-        console.log(this.dy);
+        // console.log(this.dy)
     }
+    if (this.x + this.radius + this.dx > canvas.width || this.x - this.radius < 0) {
+        this.dx = -this.dx;
+    }
+    this.x += this.dx;
     this.y += this.dy;
     this.draw();
 };
 
 // Implementation
-var ball = void 0;
-var balls = [];
+var balls = void 0;
 function init() {
-    ball = new Ball(canvas.width / 2, canvas.height / 2, 2, 30, 'red');
     balls = [];
-    for (var i = 0; i < 5; i++) {
-        var x = _utils2.default.randomIntFromRange(0, canvas.width);
-        balls.push(new Ball(x, 200, 2, 4, 'red'));
+    for (var i = 0; i < 400; i++) {
+        var radius = _utils2.default.randomIntFromRange(8, 20);
+        var x = _utils2.default.randomIntFromRange(radius, canvas.width - radius);
+        var y = _utils2.default.randomIntFromRange(0, canvas.height - radius);
+        var dx = _utils2.default.randomIntFromRange(-2, 2);
+        var dy = _utils2.default.randomIntFromRange(-2, 2);
+        var myColor = _utils2.default.randomColor(colors);
+        balls.push(new Ball(x, y, dx, dy, 20, myColor));
     }
 }
 

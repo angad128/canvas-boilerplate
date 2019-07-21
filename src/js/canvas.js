@@ -26,14 +26,20 @@ addEventListener('resize', () => {
     init()
 })
 
+addEventListener("click", () => {
+    init();
+})
+
 let gravity = 1;
-let friction = 0.99;
+let friction = 0.59;
+let radius = 30;
 
 // Objects
-function Ball(x, y, dy, radius, color) {
+function Ball(x, y, dx, dy, radius, color) {
     this.x = x
     this.y = y
-    this.dy=dy
+    this.dx = dx
+    this.dy = dy
     this.radius = radius
     this.color = color
 }
@@ -43,29 +49,37 @@ Ball.prototype.draw = function() {
     c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
     c.fillStyle = this.color
     c.fill()
+    c.stroke()
     c.closePath()
 }
 
 Ball.prototype.update = function() {
-    if (this.y+this.radius > canvas.height) {
+    if (this.y+this.radius+this.dy > canvas.height) {
         this.dy = (-this.dy * friction)
     } else {
         this.dy += gravity;
-        console.log(this.dy)
+        // console.log(this.dy)
     }
+    if (this.x+this.radius+this.dx>canvas.width || this.x-this.radius<0) {
+        this.dx = -this.dx
+    }
+    this.x += this.dx
     this.y += this.dy
     this.draw()
 }
 
 // Implementation
-let ball
-var balls = []
+let balls
 function init() {
-    ball = new Ball(canvas.width/2,canvas.height/2, 2, 30, 'red')
     balls = []
-    for (var i = 0; i < 5; i++) {
-        let x = utils.randomIntFromRange(0, canvas.width)
-        balls.push(new Ball(x,200, 2, 4, 'red'))
+    for (var i = 0; i < 400; i++) {
+        var radius = utils.randomIntFromRange(8,20)
+        let x = utils.randomIntFromRange(radius, canvas.width-radius)
+        let y = utils.randomIntFromRange(0, canvas.height-radius)
+        let dx = utils.randomIntFromRange(-2,2)
+        let dy = utils.randomIntFromRange(-2,2)
+        var myColor = utils.randomColor(colors)
+        balls.push(new Ball(x,y, dx,dy, 20, myColor))
     }
 }
 
