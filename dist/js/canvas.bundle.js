@@ -164,6 +164,11 @@ var ball = void 0;
 var balls = [];
 function init() {
     ball = new Ball(canvas.width / 2, canvas.height / 2, 2, 30, 'red');
+    balls = [];
+    for (var i = 0; i < 5; i++) {
+        var x = _utils2.default.randomIntFromRange(0, canvas.width);
+        balls.push(new Ball(x, 200, 2, 4, 'red'));
+    }
 }
 
 // Animation Loop
@@ -172,7 +177,9 @@ function animate() {
     c.clearRect(0, 0, canvas.width, canvas.height);
 
     // c.fillText('HTML CANVAS BOILERPLATE', mouse.x, mouse.y)
-    ball.update();
+    for (var i = balls.length - 1; i >= 0; i--) {
+        balls[i].update();
+    }
 }
 
 init();
