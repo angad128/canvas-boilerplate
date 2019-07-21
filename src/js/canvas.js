@@ -26,15 +26,19 @@ addEventListener('resize', () => {
     init()
 })
 
+let gravity = 1;
+let friction = 0.99;
+
 // Objects
-function Object(x, y, radius, color) {
+function Ball(x, y, dy, radius, color) {
     this.x = x
     this.y = y
+    this.dy=dy
     this.radius = radius
     this.color = color
 }
 
-Object.prototype.draw = function() {
+Ball.prototype.draw = function() {
     c.beginPath()
     c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
     c.fillStyle = this.color
@@ -42,18 +46,22 @@ Object.prototype.draw = function() {
     c.closePath()
 }
 
-Object.prototype.update = function() {
+Ball.prototype.update = function() {
+    if (this.y+this.radius > canvas.height) {
+        this.dy = (-this.dy * friction)
+    } else {
+        this.dy += gravity;
+        console.log(this.dy)
+    }
+    this.y += this.dy
     this.draw()
 }
 
 // Implementation
-let objects
+let ball
+var balls = []
 function init() {
-    objects = []
-
-    for (let i = 0; i < 400; i++) {
-        // objects.push()
-    }
+    ball = new Ball(canvas.width/2,canvas.height/2, 2, 30, 'red')
 }
 
 // Animation Loop
@@ -61,10 +69,8 @@ function animate() {
     requestAnimationFrame(animate)
     c.clearRect(0, 0, canvas.width, canvas.height)
 
-    c.fillText('HTML CANVAS BOILERPLATE', mouse.x, mouse.y)
-    // objects.forEach(object => {
-    //  object.update()
-    // })
+    // c.fillText('HTML CANVAS BOILERPLATE', mouse.x, mouse.y)
+    ball.update();
 }
 
 init()
